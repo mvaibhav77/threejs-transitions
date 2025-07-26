@@ -1,8 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import CameraController from "./CameraController";
 import { useSceneLoading } from "../../hooks/useSceneLoading";
-import type { Mesh } from "three";
+import { MeshStandardMaterial, type Mesh } from "three";
 import { OBJ_SIZE, OBJ_COUNT } from "../../utils/constants";
 
 interface MeshProps {
@@ -16,11 +15,21 @@ interface MeshProps {
 function AnimatedObject({
   meshProps,
   index,
+  type = "mesh",
 }: {
   meshProps: MeshProps;
   index: number;
+  type?: "mesh" | "solid";
 }) {
   const meshRef = useRef<Mesh>(null);
+
+  const materials = useMemo(
+    () => ({
+      mesh: new MeshStandardMaterial({ color: 0x00ff00, wireframe: true }),
+      solid: new MeshStandardMaterial({ color: 0xff1493, wireframe: false }),
+    }),
+    []
+  );
 
   useFrame((_, delta) => {
     if (meshRef.current) {
@@ -42,7 +51,9 @@ function AnimatedObject({
       scale={meshProps.scale}
     >
       <tetrahedronGeometry args={[OBJ_SIZE, 0]} />
-      <meshStandardMaterial color={0x00ff00} />
+      <meshStandardMaterial
+        {...(type === "mesh" ? materials.mesh : materials.solid)}
+      />
     </mesh>
   );
 }
@@ -92,11 +103,14 @@ function FlyingObjects() {
 
   return (
     <>
-      <CameraController />
-
-      {/* Render Objects */}
+      {/* Render Wireframe Objects */}
       {meshProps.map((props, index) => (
-        <AnimatedObject key={index} meshProps={props} index={index} />
+        <AnimatedObject
+          key={`mesh-${index}`}
+          meshProps={props}
+          index={index}
+          type="solid"
+        />
       ))}
     </>
   );

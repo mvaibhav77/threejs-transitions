@@ -2,6 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import FlyingObjects from "./FlyingObjects";
 import { ACESFilmicToneMapping } from "three";
 import { useLoading } from "../../hooks/useLoading";
+import CameraController from "./CameraController";
 
 function SceneOne() {
   const { isLoading } = useLoading();
@@ -29,6 +30,13 @@ function SceneOne() {
         }}
       >
         <color attach="background" args={[0x000111]} />
+
+        <hemisphereLight args={[0xffffff, 0x555555, 1.0]} />
+
+        <fogExp2 attach="fog" args={[0x000111, 0.0001]} />
+
+      <CameraController />
+
 
         <FlyingObjects />
       </Canvas>
