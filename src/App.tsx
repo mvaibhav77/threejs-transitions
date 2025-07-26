@@ -1,5 +1,13 @@
+import SceneOne from "./scenes/SceneOne";
+
 function App() {
-  return <main>APP</main>;
+  return (
+    <main>
+      <SceneOne />
+
+      {/* // other scenes // */}
+    </main>
+  );
 }
 
 export default App;
