@@ -1,9 +1,10 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
 import CameraController from "./CameraController";
+import type { Mesh } from "three";
 
-const objCount = 1000; 
+const objCount = 1000;
+
 interface MeshProps {
   position: { x: number; y: number; z: number };
   rotation: { x: number; y: number; z: number };
@@ -19,7 +20,7 @@ function AnimatedObject({
   meshProps: MeshProps;
   index: number;
 }) {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<Mesh>(null);
   const size = 0.35;
 
   useFrame((_, delta) => {
