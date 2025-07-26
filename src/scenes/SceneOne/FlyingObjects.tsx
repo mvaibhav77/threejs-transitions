@@ -1,6 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import CameraController from "./CameraController";
+import { useSceneLoading } from "../../hooks/useSceneLoading";
 import type { Mesh } from "three";
 import { OBJ_SIZE, OBJ_COUNT } from "../../utils/constants";
 
@@ -47,6 +48,11 @@ function AnimatedObject({
 }
 
 function FlyingObjects() {
+  // Scene loading detection - manual control
+  const { setSceneReady } = useSceneLoading({
+    minLoadTime: 800, // Reduced minimum time since we're optimizing
+  });
+
   // Generate stable mesh properties using useMemo
   const meshProps = useMemo(() => {
     const arr: MeshProps[] = [];
@@ -72,6 +78,17 @@ function FlyingObjects() {
     }
     return arr;
   }, []);
+
+  // Mark scene as ready after fewer frames for faster loading
+  const frameCount = useRef(0);
+  useFrame(() => {
+    frameCount.current++;
+    if (frameCount.current === 5) {
+      // After 5 frames instead of 10, consider scene ready
+      console.log("Marking scene as ready after 5 frames");
+      setSceneReady();
+    }
+  });
 
   return (
     <>
